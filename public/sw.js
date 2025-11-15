@@ -1,11 +1,19 @@
 // Service Worker for Mi Argentina PWA
-const CACHE_NAME = 'mi-argentina-v1';
+const CACHE_NAME = 'mi-argentina-v2';
 const STATIC_CACHE_URLS = [
   '/',
   '/manifest.webmanifest',
+  '/favicon.ico',
   '/icon-192.png',
   '/icon-512.png',
 ];
+
+// Listen for SKIP_WAITING message
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
 
 // Install event - cache static assets
 self.addEventListener('install', (event) => {
@@ -14,8 +22,6 @@ self.addEventListener('install', (event) => {
       return cache.addAll(STATIC_CACHE_URLS);
     })
   );
-  // Force the waiting service worker to become the active service worker
-  self.skipWaiting();
 });
 
 // Activate event - clean up old caches
